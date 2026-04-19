@@ -19,6 +19,7 @@
   <meta property="og:image:type" content="image/png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Wedding Invitation — R.K. Sakthivel & S. Lalitha" />
   <meta itemprop="image" content="https://sakthivelweddingsite.netlify.app/couple.png" />
 
   <!-- Twitter -->
@@ -71,6 +72,11 @@
       overflow-x: hidden;
       line-height: 1.6;
       background: var(--primary);
+    }
+
+    /* Prevent scrolling while welcome gate is visible */
+    body.gate-active {
+      overflow: hidden;
     }
 
     /* ══════════════════════════════
@@ -955,11 +961,20 @@
       .event-card {
         padding: 40px 28px;
       }
+
+      /* Center couple text on mobile */
+      .couple-text {
+        text-align: center;
+      }
+
+      .couple-text .section-title {
+        text-align: center !important;
+      }
     }
   </style>
 </head>
 
-<body>
+<body class="gate-active">
 
   <!-- ── Background layers ── -->
   <div class="bg-base"></div>
@@ -1091,15 +1106,25 @@
   </footer>
 
   <!-- Audio (music icon removed from UI, audio kept) -->
-  <audio id="bg-music" loop>
+  <audio id="bg-music">
     <source src="music/wedding-song.mp3" type="audio/mpeg">
   </audio>
 
   <script>
     /* ── Gate ── */
+    let musicTimer = null;
     function dismissGate() {
       document.getElementById('welcome-gate').classList.add('dismissed');
-      document.getElementById('bg-music').play().catch(() => { });
+      document.body.classList.remove('gate-active');
+
+      const music = document.getElementById('bg-music');
+      music.play().catch(() => { });
+
+      // Stop music after 1 minute (60 000 ms)
+      musicTimer = setTimeout(() => {
+        music.pause();
+        music.currentTime = 0;
+      }, 60000);
     }
 
     /* ── Music toggle (no UI button, function retained) ── */
